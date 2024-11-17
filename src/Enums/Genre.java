@@ -1,6 +1,6 @@
-package Enums;
+package Enums;//declaring the package
 
-public enum Genre {
+public enum Genre {//defining the genre enum
     ROCK,
     POP,
     JAZZ,
