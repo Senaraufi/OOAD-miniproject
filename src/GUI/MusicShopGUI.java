@@ -12,6 +12,9 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.File;
 
 public class MusicShopGUI extends JFrame {
     private Customer customer;
@@ -21,6 +24,7 @@ public class MusicShopGUI extends JFrame {
     private JList<Album> cartList;
     private JLabel totalLabel;
     private JLabel messageLabel;
+    private static final String IMAGE_PATH = "resources/images/"; // Base path for album images
 
     public MusicShopGUI() {
         initializeShop();
@@ -30,15 +34,15 @@ public class MusicShopGUI extends JFrame {
     private void initializeShop() {
         // Initialize customer
         customer = new Customer("Guest");
-        
+
         // Initialize available albums
         availableAlbums = new ArrayList<>();
-        availableAlbums.add(new Album("Greatest Hits", "Queen", Genre.ROCK));
-        availableAlbums.add(new Album("Thriller", "Michael Jackson", Genre.POP));
-        availableAlbums.add(new Album("Dark Side of the Moon", "Pink Floyd", Genre.ROCK));
-        availableAlbums.add(new Album("Back in Black", "AC/DC", Genre.ROCK));
-        availableAlbums.add(new Album("21", "Adele", Genre.POP));
-        
+        availableAlbums.add(new Album("Greatest Hits", "Queen", Genre.ROCK, 29.99, "queen.jpg"));
+        availableAlbums.add(new Album("Thriller", "Michael Jackson", Genre.POP, 24.99, "thriller.jpg"));
+        availableAlbums.add(new Album("Dark Side of the Moon", "Pink Floyd", Genre.ROCK, 19.99, "dark_side.jpg"));
+        availableAlbums.add(new Album("Back in Black", "AC/DC", Genre.ROCK, 21.99, "back_in_black.jpg")); 
+        availableAlbums.add(new Album("21", "Adele", Genre.POP, 18.99, "adele_21.jpg"));
+
         cartListModel = new DefaultListModel<>();
     }
 
@@ -77,10 +81,10 @@ public class MusicShopGUI extends JFrame {
         JPanel cartControlsPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         JButton removeFromCartButton = new JButton("Remove from Cart");
         removeFromCartButton.addActionListener(e -> removeFromCart());
-        
+
         JButton checkoutButton = new JButton("Checkout");
         checkoutButton.addActionListener(e -> checkout());
-        
+
         totalLabel = new JLabel("Total Items: 0");
         messageLabel = new JLabel(" ");
         messageLabel.setForeground(Color.BLUE);
@@ -112,6 +116,49 @@ public class MusicShopGUI extends JFrame {
         Album selectedAlbum = albumList.getSelectedValue();
         if (selectedAlbum != null) {
             cartListModel.addElement(selectedAlbum);
+            
+            try {
+                String imagePath = getImagePath(selectedAlbum.getImageFileName());
+                File imageFile = new File(imagePath);
+                
+                if (!imageFile.exists()) {
+                    messageLabel.setText("Image not found at: " + imagePath);
+                    return;
+                }
+
+                ImageIcon albumImageIcon = new ImageIcon(imagePath);
+                
+                // Scale the image while maintaining aspect ratio
+                if (albumImageIcon.getIconWidth() > 0) {
+                    int maxSize = 200;
+                    int width = albumImageIcon.getIconWidth();
+                    int height = albumImageIcon.getIconHeight();
+                    double scale = Math.min((double) maxSize / width, (double) maxSize / height);
+                    
+                    int scaledWidth = (int) (width * scale);
+                    int scaledHeight = (int) (height * scale);
+                    
+                    Image scaledImage = albumImageIcon.getImage()
+                        .getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+                    
+                    JLabel albumImageLabel = new JLabel(new ImageIcon(scaledImage));
+                    albumImageLabel.setHorizontalAlignment(JLabel.CENTER);
+                    
+                    JPanel imagePanel = new JPanel(new BorderLayout());
+                    imagePanel.add(albumImageLabel, BorderLayout.CENTER);
+                    imagePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                    
+                    JOptionPane.showMessageDialog(this, imagePanel,
+                        "Added to Cart: " + selectedAlbum.getTitle(),
+                        JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    messageLabel.setText("Failed to load image: " + selectedAlbum.getImageFileName());
+                }
+            } catch (Exception e) {
+                messageLabel.setText("Error loading image: " + e.getMessage());
+                e.printStackTrace();
+            }
+
             updateTotalLabel();
             messageLabel.setText("Added: " + selectedAlbum.getTitle());
         }
@@ -120,9 +167,12 @@ public class MusicShopGUI extends JFrame {
     private void removeFromCart() {
         int selectedIndex = cartList.getSelectedIndex();
         if (selectedIndex != -1) {
-            Album removedAlbum = cartListModel.remove(selectedIndex);
+            Album removedAlbum = cartListModel.getElementAt(selectedIndex);
+            cartListModel.remove(selectedIndex);
             updateTotalLabel();
             messageLabel.setText("Removed: " + removedAlbum.getTitle());
+        } else {
+            messageLabel.setText("Please select an item to remove from the cart");
         }
     }
 
@@ -147,7 +197,19 @@ public class MusicShopGUI extends JFrame {
     }
 
     private void updateTotalLabel() {
-        totalLabel.setText("Total Items: " + cartListModel.size());
+        double total = 0.0;
+        for (int i = 0; i < cartListModel.getSize(); i++) {
+            Album album = cartListModel.getElementAt(i);
+            total += album.getPrice();
+        }
+        totalLabel.setText(String.format("Total: $%.2f", total));
+    }
+
+    private String getImagePath(String fileName) {
+        // Get the absolute path to the project root
+        String projectPath = System.getProperty("user.dir");
+        // Construct the full path to the image
+        return projectPath + File.separator + "src" + File.separator + IMAGE_PATH + fileName;
     }
 
     public static void main(String[] args) {

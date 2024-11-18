@@ -15,9 +15,9 @@ public class Main {
         // Create albums
         System.out.println("Creating Albums:");
         System.out.println("----------------");
-        Album album1 = new Album("Greatest Hits", "Queen", Genre.ROCK);
-        Album album2 = new Album("Thriller", "Michael Jackson", Genre.POP);
-        Album album3 = new Album("Dark Side of the Moon", "Pink Floyd", Genre.ROCK);
+        Album album1 = new Album("Greatest Hits", "Queen", Genre.ROCK, 29.99, "queen.jpg");
+        Album album2 = new Album("Thriller", "Michael Jackson", Genre.POP, 24.99, "thriller.jpg");
+        Album album3 = new Album("Dark Side of the Moon", "Pink Floyd", Genre.ROCK, 27.99, "darkside.jpg");
         
         System.out.println("1. " + album1);
         System.out.println("2. " + album2);
