@@ -15,6 +15,7 @@ import java.util.List;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
+import javax.swing.border.TitledBorder;
 
 public class MusicShopGUI extends JFrame {
     private Customer customer;
@@ -25,6 +26,10 @@ public class MusicShopGUI extends JFrame {
     private JLabel totalLabel;
     private JLabel messageLabel;
     private static final String IMAGE_PATH = "resources/images/"; // Base path for album images
+    private static final Color DARK_BACKGROUND = new Color(43, 43, 43);
+    private static final Color DARKER_BACKGROUND = new Color(30, 30, 30);
+    private static final Color HIGHLIGHT_COLOR = new Color(75, 110, 175);
+    private static final Color TEXT_COLOR = new Color(187, 187, 187);
 
     public MusicShopGUI() {
         initializeShop();
@@ -128,7 +133,6 @@ public class MusicShopGUI extends JFrame {
 
                 ImageIcon albumImageIcon = new ImageIcon(imagePath);
                 
-                // Scale the image while maintaining aspect ratio
                 if (albumImageIcon.getIconWidth() > 0) {
                     int maxSize = 200;
                     int width = albumImageIcon.getIconWidth();
