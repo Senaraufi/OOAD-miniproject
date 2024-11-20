@@ -40,7 +40,7 @@ public class Album implements Purchasable {//defining the album class
 
     @Override
     public String toString() {
-        return title + " - " + artist + " ($" + price + ")";
+        return title + " - " + artist + " (" + genre + ") ($" + price + ")";
     }
 
     @Override

@@ -6,5 +6,7 @@ public enum Genre { // Defining the Genre enum
     JAZZ, // Jazz genre
     CLASSICAL, // Classical genre
     HIPHOP, // Hip-hop genre
-    ELECTRONIC // Electronic genre
+    ELECTRONIC, // Electronic genre
+    RAP, // Rap genre
+    FOLK // Folk genre
 }
