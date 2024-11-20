@@ -1,7 +1,7 @@
-package Exceptions;//declaring the package
+package Exceptions; // Declaring the package
 
-public class PurchaseLimitException extends Exception {//defining the purchase limit exception
-    public PurchaseLimitException(String message) {
-        super(message);//calling the super class constructor
+public class PurchaseLimitException extends Exception { // Defining the PurchaseLimitException class
+    public PurchaseLimitException(String message) { // Constructor
+        super(message); // Calling the superclass constructor
     }
 }

@@ -79,6 +79,7 @@ public class MusicShopGUI extends JFrame {
         // Shopping Cart Section
         rightPanel.setBorder(BorderFactory.createTitledBorder("Shopping Cart"));
         cartList = new JList<>(cartListModel);
+        cartList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         JScrollPane cartScrollPane = new JScrollPane(cartList);
         rightPanel.add(cartScrollPane, BorderLayout.CENTER);
 
@@ -169,14 +170,19 @@ public class MusicShopGUI extends JFrame {
     }
 
     private void removeFromCart() {
-        int selectedIndex = cartList.getSelectedIndex();
-        if (selectedIndex != -1) {
-            Album removedAlbum = cartListModel.getElementAt(selectedIndex);
-            cartListModel.remove(selectedIndex);
+        int[] selectedIndices = cartList.getSelectedIndices();
+        if (selectedIndices.length > 0) {
+            List<Album> albumsToRemove = new ArrayList<>();
+            for (int index : selectedIndices) {
+                albumsToRemove.add(cartListModel.getElementAt(index));
+            }
+            for (Album album : albumsToRemove) {
+                cartListModel.removeElement(album);
+            }
             updateTotalLabel();
-            messageLabel.setText("Removed: " + removedAlbum.getTitle());
+            messageLabel.setText("Removed selected items from the cart");
         } else {
-            messageLabel.setText("Please select an item to remove from the cart");
+            messageLabel.setText("Please select items to remove from the cart");
         }
     }
 

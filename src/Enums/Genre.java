@@ -1,10 +1,10 @@
-package Enums;//declaring the package
+package Enums; // Declaring the package
 
-public enum Genre {//defining the genre enum
-    ROCK,
-    POP,
-    JAZZ,
-    CLASSICAL,
-    HIPHOP,
-    ELECTRONIC
+public enum Genre { // Defining the Genre enum
+    ROCK, // Rock genre
+    POP, // Pop genre
+    JAZZ, // Jazz genre
+    CLASSICAL, // Classical genre
+    HIPHOP, // Hip-hop genre
+    ELECTRONIC // Electronic genre
 }
