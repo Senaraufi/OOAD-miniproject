@@ -1,0 +1,122 @@
+### Music Shop Management System - Project Summary
+========================================
+
+Project Overview
+---------------
+This project implements a Music Shop Management System using Java, following Object-Oriented Programming principles. The system allows users to browse, purchase, and manage music albums and CDs through both a command-line interface and a graphical user interface.
+
+Package Structure
+---------------
+The project is organized into 7 packages:
+1. Model: Contains the core business logic classes
+2. GUI: Contains the graphical user interface components
+3. Enums: Contains enumeration types
+4. Exceptions: Contains custom exception classes
+5. Interfaces: Contains interface definitions
+6. Main: Contains the application entry point
+7. Resources: Contains application resources (images)
+
+Class Hierarchy
+--------------
+1. Abstract Classes:
+   - Product: Base class for all purchasable items
+     - Defines common attributes (name, price, imageFileName)
+     - Implements Purchasable interface
+
+2. Interfaces:
+   - Purchasable: Defines contract for purchasable items
+     - Methods: purchaseItem(), returnItem()
+
+3. Sub Classes:
+   - Album: Extends Product
+     - Additional attributes: artist, genre
+   - CD: Extends Product
+     - Additional attributes: artist, genre, numberOfTracks, duration
+
+4. Regular Classes:
+   - Customer: Manages customer information and purchases
+   - Sale: Records sales transactions
+   - ShoppingCart: Manages shopping cart functionality
+   - Main: Application entry point
+   - MusicShopGUI: Main GUI window
+   - AlbumListCellRenderer: Custom renderer for album list display
+
+5. Exception Classes:
+   - PurchaseLimitException: Handles purchase limit violations
+
+6. Enum Classes:
+   - Genre: Defines music genres (ROCK, POP, JAZZ, etc.)
+
+Key Features
+-----------
+1. Product Management:
+   - Support for different types of music products (Albums, CDs)
+   - Product details include name, price, artist, genre
+
+2. Shopping Features:
+   - Shopping cart functionality
+   - Purchase limit enforcement
+   - Sale recording
+   - Product returns
+
+3. User Interface:
+   - Graphical User Interface with:
+     * Product browsing
+     * Cart management
+     * Checkout process
+   - Command-line interface for testing
+
+4. Error Handling:
+   - Custom exceptions for purchase limits
+   - Proper validation of operations
+
+Design Patterns Used
+------------------
+1. Inheritance: Product -> Album/CD hierarchy
+2. Interface Implementation: Purchasable interface
+3. Model-View Separation: Separate packages for business logic and UI
+
+How It Works
+-----------
+1. Initialization:
+   - System loads with predefined albums and CDs
+   - Creates a customer instance
+   - Initializes shopping cart
+
+2. Purchase Flow:
+   - User browses available products
+   - Adds items to shopping cart
+   - Reviews cart contents
+   - Proceeds to checkout
+   - System validates purchase against limits
+   - Creates sale records
+   - Updates inventory
+
+3. Error Handling:
+   - Checks purchase limits
+   - Validates cart operations
+   - Provides user feedback
+
+4. GUI Implementation:
+   - Shows available products with images
+   - Displays cart contents
+   - Shows total price
+   - Provides feedback messages
+
+Object-Oriented Principles Demonstrated
+------------------------------------
+1. Encapsulation:
+   - Private fields with public getters/setters
+   - Protected access where appropriate
+
+2. Inheritance:
+   - Product hierarchy
+   - GUI component extension
+
+3. Polymorphism:
+   - Product/Album/CD relationships
+   - Interface implementation
+
+4. Abstraction:
+   - Abstract Product class
+   - Purchasable interface

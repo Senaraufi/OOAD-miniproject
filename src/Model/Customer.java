@@ -7,13 +7,13 @@ import java.util.List;//importing the list
 
 public class Customer {//defining the customer class
     private String name;//declaring the name variable
-    private List<Album> purchasedAlbums;//declaring the purchasedAlbums variable
+    private List<Product> purchasedItems;//declaring the purchasedItems variable
     private static final int MAX_PURCHASES = 3;//declaring the MAX_PURCHASES variable
 
 
     public Customer(String name) {
         this.name = name;//initializing the name variable
-        this.purchasedAlbums = new ArrayList<>();//initializing the purchasedAlbums variable
+        this.purchasedItems = new ArrayList<>();//initializing the purchasedItems variable
     }
 
     public String getName() {//defining the getName method
@@ -24,32 +24,32 @@ public class Customer {//defining the customer class
         this.name = name;//initializing the name variable
     }
 
-    public List<Album> getPurchasedAlbums() {//defining the getPurchasedAlbums method
-        return purchasedAlbums;//returning the purchasedAlbums
+    public List<Product> getPurchasedItems() {//defining the getPurchasedItems method
+        return purchasedItems;//returning the purchasedItems
     }
 
-    public void setPurchasedAlbums(List<Album> purchasedAlbums) {//defining the setPurchasedAlbums method
-        this.purchasedAlbums = purchasedAlbums;//initializing the purchasedAlbums variable
+    public void setPurchasedItems(List<Product> purchasedItems) {//defining the setPurchasedItems method
+        this.purchasedItems = purchasedItems;//initializing the purchasedItems variable
     }
 
-    public void purchaseAlbum(Album album) throws PurchaseLimitException {//defining the purchaseAlbum method
-        if (purchasedAlbums.size() >= MAX_PURCHASES) {
-            throw new PurchaseLimitException("Purchase limit reached. Return an album before purchasing another.");
+    public void purchaseItem(Product product) throws PurchaseLimitException {//defining the purchaseItem method
+        if (purchasedItems.size() >= MAX_PURCHASES) {
+            throw new PurchaseLimitException("Purchase limit reached. Return an item before purchasing another.");
         }
-        album.purchaseItem();//calling the purchaseItem method
-        purchasedAlbums.add(album);//adding the album to the purchasedAlbums list
+        product.purchaseItem();//calling the purchaseItem method
+        purchasedItems.add(product);//adding the product to the purchasedItems list
     }
 
-    public void returnAlbum(Album album) {
-        album.returnItem();//calling the returnItem method
-        purchasedAlbums.remove(album);//removing the album from the purchasedAlbums list
+    public void returnItem(Product product) {
+        product.returnItem();//calling the returnItem method
+        purchasedItems.remove(product);//removing the product from the purchasedItems list
     }
 
     @Override
     public String toString() {//defining the toString method
         return "Customer{" +//returning the customer details
                 "name='" + name + '\'' +//getting the name
-                ", purchasedAlbums=" + purchasedAlbums +//getting the purchasedAlbums
+                ", purchasedItems=" + purchasedItems +//getting the purchasedItems
                 '}';//end of string representation
     }
 }

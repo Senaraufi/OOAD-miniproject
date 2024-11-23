@@ -8,14 +8,10 @@ import Exceptions.PurchaseLimitException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.File;
-import javax.swing.border.TitledBorder;
 
 public class MusicShopGUI extends JFrame {
     private Customer customer;
@@ -26,11 +22,6 @@ public class MusicShopGUI extends JFrame {
     private JLabel totalLabel;
     private JLabel messageLabel;
     private static final String IMAGE_PATH = "resources/images/"; // Base path for album images
-    private static final Color DARK_BACKGROUND = Color.BLACK;
-    private static final Color DARKER_BACKGROUND = new Color(30, 30, 30);
-    private static final Color HIGHLIGHT_COLOR = new Color(75, 110, 175);
-    private static final Color TEXT_COLOR = Color.LIGHT_GRAY;
-
     public MusicShopGUI() {
         initializeShop();
         setupGUI();
@@ -219,7 +210,7 @@ public class MusicShopGUI extends JFrame {
         try {
             for (int i = 0; i < cartListModel.size(); i++) {
                 Album album = cartListModel.getElementAt(i);
-                customer.purchaseAlbum(album);
+                customer.purchaseItem(album);
                 new Sale(customer, album, new Date());
             }
             messageLabel.setText("Checkout successful! Thank you for your purchase.");
@@ -243,7 +234,7 @@ public class MusicShopGUI extends JFrame {
         // Get the absolute path to the project root
         String projectPath = System.getProperty("user.dir");
         // Construct the full path to the image
-        return projectPath + File.separator + "src" + File.separator + IMAGE_PATH + fileName;
+        return projectPath + File.separator + IMAGE_PATH + fileName;
     }
 
     public static void main(String[] args) {

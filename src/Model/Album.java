@@ -1,33 +1,19 @@
 package Model;
 
 import Enums.Genre;
-import Interfaces.Purchasable;
 
-public class Album implements Purchasable {
-    private String title;
+public class Album extends Product {
     private String artist;
     private Genre genre;
-    private double price;
-    private String imageFileName;
 
     public Album(String title, String artist, Genre genre, double price, String imageFileName) {
-        this.title = title;
+        super(title, price, imageFileName);
         this.artist = artist;
         this.genre = genre;
-        this.price = price;
-        this.imageFileName = imageFileName;
     }
 
     public String getTitle() {
-        return title;
-    }
-
-    public String getImageFileName() {
-        return imageFileName;
-    }
-
-    public double getPrice() {
-        return price;
+        return getName();
     }
 
     public String getArtist() {
@@ -40,7 +26,7 @@ public class Album implements Purchasable {
 
     @Override
     public String toString() {
-        return title + " - " + artist + " (" + genre + ") ($" + price + ")";
+        return getTitle() + " - " + artist + " (" + genre + ") ($" + getPrice() + ")";
     }
 
     @Override

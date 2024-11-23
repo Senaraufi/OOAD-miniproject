@@ -3,14 +3,14 @@ package Model; // Declare the package this class belongs to
 import java.util.Date; // Import the Date class from java.util package
 
 public class Sale { // Define the Sale class
-    private Customer customer; // Declare a Customer object to hold the customer information
-    private Album album; // Declare an Album object to hold the album information
-    private Date saleDate; // Declare a Date object to hold the sale date
+    private Customer customer; // Customer who made the purchase
+    private Product product; // Product that was purchased
+    private Date saleDate; // Date of the sale
 
-    // Constructor to initialize Sale object with customer, album, and sale date
-    public Sale(Customer customer, Album album, Date saleDate) {
+    // Constructor to initialize Sale object with customer, product, and sale date
+    public Sale(Customer customer, Product product, Date saleDate) {
         this.customer = customer; // Set the customer
-        this.album = album; // Set the album
+        this.product = product; // Set the product
         this.saleDate = saleDate; // Set the sale date
     }
 
@@ -24,14 +24,14 @@ public class Sale { // Define the Sale class
         this.customer = customer; // Set the customer
     }
 
-    // Getter method for album
-    public Album getAlbum() {
-        return album; // Return the album
+    // Getter method for product
+    public Product getProduct() {
+        return product; // Return the product
     }
 
-    // Setter method for album
-    public void setAlbum(Album album) {
-        this.album = album; // Set the album
+    // Setter method for product
+    public void setProduct(Product product) {
+        this.product = product; // Set the product
     }
 
     // Getter method for sale date
@@ -49,7 +49,7 @@ public class Sale { // Define the Sale class
     public String toString() {
         return "Sale{" +
                 "customer=" + customer.getName() + // Get the customer's name
-                ", album=" + album.getTitle() + // Get the album's title
+                ", product=" + product.getName() + // Get the product's name
                 ", saleDate=" + saleDate + // Get the sale date
                 '}'; // End of string representation
     }

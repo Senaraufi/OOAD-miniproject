@@ -1,0 +1,85 @@
+### Team Meetings & Contributions Summary
+==========================================
+
+Week 7 (date xxxxx, 2023)
+----------------------------
+Meeting Date: 
+Location: 
+Attendees: Sena, Pixie
+
+Decisions Made:
+- Finalized project scope and requirements
+- Assigned initial roles and responsibilities
+- Set up GitHub repository for version control
+
+Individual Contributions:
+- Sena: 
+- Pixie:
+
+Week 8 (date xxxxx, 2023)
+----------------------------
+Meeting Date: 
+Location: Online Discord
+Attendees: Both team members
+
+Decisions Made:
+- Reviewed and refined initial diagrams
+- Started code implementation
+- Established coding standards
+
+Individual Contributions:
+- Sena: 
+  *
+  * 
+  *
+- Pixie:
+  * 
+  * 
+  *
+
+Week 9 (date xxxxx, 2023)
+-----------------------------------
+Meeting Date: 
+Location:
+Attendees: Both team members
+
+Decisions Made:
+- Conducted code review
+- Integrated all components
+- Planned testing phase
+
+Individual Contributions:
+- Sena:
+  * 
+  * 
+  
+- Pixie:
+  * 
+  * 
+
+Final Week (Date xxxxx, 2023)
+-----------------------------
+Meeting Date: 
+Location: 
+Attendees: Both team members
+
+Decisions Made:
+- Final testing and bug fixes
+- Documentation review
+- Preparation for presentation
+
+Individual Contributions:
+- Sena:
+  * 
+  * 
+  
+- Pixie:
+  * 
+  * 
+
+Documentation:
+- Sena: Project architecture and class diagrams
+        Testing documentation and use cases
+
+- Pixie: GUI documentation and user interface flows
+         User manual and deployment guide
