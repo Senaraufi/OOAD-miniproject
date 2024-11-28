@@ -21,7 +21,7 @@ public class MusicShopGUI extends JFrame {
     private JList<Album> cartList;
     private JLabel totalLabel;
     private JLabel messageLabel;
-    private static final String IMAGE_PATH = "resources/images/"; // Base path for album images
+    private static final String IMAGE_PATH = "src/resources/images/"; // Base path for album images
     public MusicShopGUI() {
         initializeShop();
         setupGUI();
@@ -33,7 +33,7 @@ public class MusicShopGUI extends JFrame {
 
         // Initialize available albums
         availableAlbums = new ArrayList<>();
-        availableAlbums.add(new Album("Greatest Hits", "Queen", Genre.ROCK, 29.99, "queen.jpg"));
+        availableAlbums.add(new Album("Greatest Hits", "Queen", Genre.ROCK, 29.99, "queen.jpeg"));
         availableAlbums.add(new Album("Thriller", "Michael Jackson", Genre.POP, 24.99, "thriller.jpg"));
         availableAlbums.add(new Album("Dark Side of the Moon", "Pink Floyd", Genre.ROCK, 19.99, "dark_side.jpg"));
         availableAlbums.add(new Album("Back in Black", "AC/DC", Genre.ROCK, 21.99, "back_in_black.jpg")); 
@@ -44,7 +44,7 @@ public class MusicShopGUI extends JFrame {
         availableAlbums.add(new Album("Born This Way (Signed Edition)", "Lady Gaga", Genre.POP, 25.00, "ladygaga.jpg"));
         availableAlbums.add(new Album("The Marshall Mathers LP", "Eminem", Genre.RAP, 20.00, "eminem.png"));
         availableAlbums.add(new Album("OK Computer", "Radiohead", Genre.ROCK, 15.00, "radiohead.jpeg"));
-        availableAlbums.add(new Album("Mellie Collie and The Infinite Sadness", "The Smashing Pumpkins", Genre.ROCK, 19.99, "smashingpumpkins.jpg"));
+        availableAlbums.add(new Album("Mellie Collie and The Infinite Sadness", "The Smashing Pumpkins", Genre.ROCK, 19.99, "thesmashingpumkins.jpg"));
         availableAlbums.add(new Album("Doolittle", "Pixies", Genre.ROCK, 15.00, "pixies.jpg"));
         availableAlbums.add(new Album("Speak for Yourself", "Imogen Heap", Genre.ELECTRONIC, 18.00, "imogenheap.jpg"));
         availableAlbums.add(new Album("Grace", "Jeff Buckley", Genre.ROCK, 15.00, "jeffbuckley.jpeg"));
@@ -57,12 +57,8 @@ public class MusicShopGUI extends JFrame {
         availableAlbums.add(new Album("Goo", "Sonic Youth", Genre.ROCK, 15.00, "sonicyouth.png"));
         availableAlbums.add(new Album("Tidal", "Fiona Apple", Genre.POP, 15.00, "fionaapple.jpg"));
         availableAlbums.add(new Album("Dreaming", "Andre Rieu", Genre.CLASSICAL, 15.00, "andrerieu.jpg"));
-        availableAlbums.add(new Album("Come Away With Me", "Norah Jones", Genre.JAZZ, 15.00, "norahjones.jpg"));
+        availableAlbums.add(new Album("Come Away With Me", "Norah Jones", Genre.JAZZ, 15.00, "norahjones.jpeg"));
         
-
-
-
-
         cartListModel = new DefaultListModel<>();
     }
 
@@ -232,7 +228,7 @@ public class MusicShopGUI extends JFrame {
 
     private String getImagePath(String fileName) {
         // Get the absolute path to the project root
-        String projectPath = System.getProperty("user.dir");
+        String projectPath = new File("").getAbsolutePath();
         // Construct the full path to the image
         return projectPath + File.separator + IMAGE_PATH + fileName;
     }
