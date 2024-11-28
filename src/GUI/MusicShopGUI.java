@@ -17,11 +17,15 @@ public class MusicShopGUI extends JFrame {
     private Customer customer;
     private List<Album> availableAlbums;
     private DefaultListModel<Album> cartListModel;
-    private JList<Album> albumList;
+    private JList<Album> vinylAlbumList;
+    private JList<Album> cdAlbumList;
     private JList<Album> cartList;
     private JLabel totalLabel;
     private JLabel messageLabel;
     private static final String IMAGE_PATH = "src/resources/images/"; // Base path for album images
+    private JTabbedPane tabbedPane;
+    private JPanel cartPanel;
+
     public MusicShopGUI() {
         initializeShop();
         setupGUI();
@@ -66,71 +70,120 @@ public class MusicShopGUI extends JFrame {
         setTitle("Music Shop");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(1000, 600));
 
         // Create main panels
-        JPanel mainPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        JPanel leftPanel = new JPanel(new BorderLayout(5, 5));
-        JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel catalogPanel = new JPanel(new BorderLayout(10, 10));
+        cartPanel = createCartPanel();
 
-        // Available Albums Section
-        leftPanel.setBorder(BorderFactory.createTitledBorder("Available Albums"));
-        DefaultListModel<Album> albumListModel = new DefaultListModel<>();
-        availableAlbums.forEach(albumListModel::addElement);
-        albumList = new JList<>(albumListModel);
-        albumList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane albumScrollPane = new JScrollPane(albumList);
-        leftPanel.add(albumScrollPane, BorderLayout.CENTER);
-
-        // Add to Cart Button
-        JButton addToCartButton = new JButton("Add to Cart");
-        addToCartButton.addActionListener(e -> addToCart());
-        leftPanel.add(addToCartButton, BorderLayout.SOUTH);
-
-        // Shopping Cart Section
-        rightPanel.setBorder(BorderFactory.createTitledBorder("Shopping Cart"));
-        cartList = new JList<>(cartListModel);
-        cartList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        JScrollPane cartScrollPane = new JScrollPane(cartList);
-        rightPanel.add(cartScrollPane, BorderLayout.CENTER);
-
-        // Cart Controls Panel
-        JPanel cartControlsPanel = new JPanel(new GridLayout(4, 1, 5, 5));
-        JButton removeFromCartButton = new JButton("Remove from Cart");
-        removeFromCartButton.addActionListener(e -> removeFromCart());
-
-        JButton checkoutButton = new JButton("Checkout");
-        checkoutButton.addActionListener(e -> checkout());
-
-        totalLabel = new JLabel("Total Items: 0");
-        messageLabel = new JLabel(" ");
-        messageLabel.setForeground(Color.BLUE);
-
-        cartControlsPanel.add(removeFromCartButton);
-        cartControlsPanel.add(checkoutButton);
-        cartControlsPanel.add(totalLabel);
-        cartControlsPanel.add(messageLabel);
-        rightPanel.add(cartControlsPanel, BorderLayout.SOUTH);
-
-        // Add panels to main panel
-        mainPanel.add(leftPanel);
-        mainPanel.add(rightPanel);
-
-        // Add main panel to frame
-        add(mainPanel, BorderLayout.CENTER);
+        // Create tabbed pane for catalogs
+        tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Vinyl", createFormatPanel(true));
+        tabbedPane.addTab("CD", createFormatPanel(false));
+        catalogPanel.add(tabbedPane, BorderLayout.CENTER);
 
         // Top panel for customer info
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel customerLabel = new JLabel("Customer: " + customer.getName());
         topPanel.add(customerLabel);
+
+        // Add panels to frame
+        mainPanel.add(catalogPanel, BorderLayout.CENTER);
+        mainPanel.add(cartPanel, BorderLayout.EAST);
+        
         add(topPanel, BorderLayout.NORTH);
+        add(mainPanel, BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
     }
 
-    private void addToCart() {
+    private JPanel createCartPanel() {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        panel.setBorder(BorderFactory.createTitledBorder("Shopping Cart"));
+        panel.setPreferredSize(new Dimension(300, getHeight()));
+
+        // Create cart list
+        cartList = new JList<>(cartListModel);
+        cartList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        cartList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Album album = (Album) value;
+                String displayText = String.format("%s - %s ($%.2f)", album.getTitle(), 
+                    tabbedPane.getSelectedIndex() == 0 ? "Vinyl" : "CD", album.getPrice());
+                return super.getListCellRendererComponent(list, displayText, index, isSelected, cellHasFocus);
+            }
+        });
+        JScrollPane cartScrollPane = new JScrollPane(cartList);
+        panel.add(cartScrollPane, BorderLayout.CENTER);
+
+        // Cart controls
+        JPanel controlsPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+        JButton removeButton = new JButton("Remove from Cart");
+        removeButton.addActionListener(e -> removeFromCart());
+
+        JButton checkoutButton = new JButton("Checkout");
+        checkoutButton.addActionListener(e -> checkout());
+
+        totalLabel = new JLabel("Total: $0.00 (0 items)");
+        messageLabel = new JLabel(" ");
+        messageLabel.setForeground(Color.BLUE);
+
+        controlsPanel.add(removeButton);
+        controlsPanel.add(checkoutButton);
+        controlsPanel.add(totalLabel);
+        controlsPanel.add(messageLabel);
+        panel.add(controlsPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    private JPanel createFormatPanel(boolean isVinyl) {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        String formatName = isVinyl ? "Vinyl" : "CD";
+        panel.setBorder(BorderFactory.createTitledBorder("Available " + formatName + "s"));
+
+        // Create album list
+        DefaultListModel<Album> albumListModel = new DefaultListModel<>();
+        availableAlbums.forEach(album -> {
+            // Calculate CD price: 40% of vinyl price, rounded to nearest 50 cents
+            double cdPrice = Math.round(album.getPrice() * 0.4 * 2) / 2.0;
+            Album formatAlbum = new Album(
+                album.getTitle(), 
+                album.getArtist(), 
+                album.getGenre(), 
+                isVinyl ? album.getPrice() : cdPrice,
+                album.getImageFileName()
+            );
+            albumListModel.addElement(formatAlbum);
+        });
+
+        JList<Album> albumList;
+        if (isVinyl) {
+            vinylAlbumList = new JList<>(albumListModel);
+            albumList = vinylAlbumList;
+        } else {
+            cdAlbumList = new JList<>(albumListModel);
+            albumList = cdAlbumList;
+        }
+        albumList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(albumList);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add to Cart button
+        JButton addButton = new JButton("Add to Cart");
+        addButton.addActionListener(e -> addToCart(isVinyl));
+        panel.add(addButton, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    private void addToCart(boolean isVinyl) {
+        JList<Album> albumList = isVinyl ? vinylAlbumList : cdAlbumList;
         Album selectedAlbum = albumList.getSelectedValue();
+        
         if (selectedAlbum != null) {
             cartListModel.addElement(selectedAlbum);
             
@@ -165,7 +218,7 @@ public class MusicShopGUI extends JFrame {
                     imagePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                     
                     JOptionPane.showMessageDialog(this, imagePanel,
-                        "Added to Cart: " + selectedAlbum.getTitle(),
+                        "Added to Cart: " + selectedAlbum.getTitle() + " (" + (isVinyl ? "Vinyl" : "CD") + ")",
                         JOptionPane.PLAIN_MESSAGE);
                 } else {
                     messageLabel.setText("Failed to load image: " + selectedAlbum.getImageFileName());
@@ -176,7 +229,7 @@ public class MusicShopGUI extends JFrame {
             }
 
             updateTotalLabel();
-            messageLabel.setText("Added: " + selectedAlbum.getTitle());
+            messageLabel.setText("Added: " + selectedAlbum.getTitle() + " (" + (isVinyl ? "Vinyl" : "CD") + ")");
         }
     }
 
@@ -191,9 +244,9 @@ public class MusicShopGUI extends JFrame {
                 cartListModel.removeElement(album);
             }
             updateTotalLabel();
-            messageLabel.setText("Removed selected items from the cart");
+            messageLabel.setText("Removed selected items from cart");
         } else {
-            messageLabel.setText("Please select items to remove from the cart");
+            messageLabel.setText("Please select items to remove from cart");
         }
     }
 
@@ -203,34 +256,36 @@ public class MusicShopGUI extends JFrame {
             return;
         }
 
-        try {
-            for (int i = 0; i < cartListModel.size(); i++) {
-                Album album = cartListModel.getElementAt(i);
-                customer.purchaseItem(album);
-                new Sale(customer, album, new Date());
-            }
-            messageLabel.setText("Checkout successful! Thank you for your purchase.");
-            cartListModel.clear();
-            updateTotalLabel();
-        } catch (PurchaseLimitException e) {
-            messageLabel.setText("Error: " + e.getMessage());
+        double total = 0;
+        List<Album> purchasedAlbums = new ArrayList<>();
+        for (int i = 0; i < cartListModel.size(); i++) {
+            Album album = cartListModel.getElementAt(i);
+            total += album.getPrice();
+            purchasedAlbums.add(album);
         }
+
+        // Create individual sales for each album
+        for (Album album : purchasedAlbums) {
+            new Sale(customer, album, new Date());
+        }
+        
+        String message = String.format("Thank you for your purchase!%nTotal: $%.2f", total);
+        JOptionPane.showMessageDialog(this, message, "Purchase Complete", JOptionPane.INFORMATION_MESSAGE);
+        cartListModel.clear();
+        updateTotalLabel();
+        messageLabel.setText("Purchase completed successfully!");
     }
 
     private void updateTotalLabel() {
-        double total = 0.0;
-        for (int i = 0; i < cartListModel.getSize(); i++) {
-            Album album = cartListModel.getElementAt(i);
-            total += album.getPrice();
+        double total = 0;
+        for (int i = 0; i < cartListModel.size(); i++) {
+            total += cartListModel.getElementAt(i).getPrice();
         }
-        totalLabel.setText(String.format("Total: $%.2f", total));
+        totalLabel.setText(String.format("Total: $%.2f (%d items)", total, cartListModel.size()));
     }
 
-    private String getImagePath(String fileName) {
-        // Get the absolute path to the project root
-        String projectPath = new File("").getAbsolutePath();
-        // Construct the full path to the image
-        return projectPath + File.separator + IMAGE_PATH + fileName;
+    private String getImagePath(String imageFileName) {
+        return IMAGE_PATH + imageFileName;
     }
 
     public static void main(String[] args) {
