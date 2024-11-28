@@ -1,0 +1,165 @@
+@startuml MusicShopSystem
+
+' Style and theme settings
+!theme plain
+skinparam backgroundColor transparent
+skinparam classAttributeIconSize 0
+skinparam roundcorner 5
+skinparam shadowing false
+
+skinparam class {
+    BackgroundColor #F8F9FA
+    BorderColor #2C3E50
+    ArrowColor #2C3E50
+    FontColor #2C3E50
+    AttributeFontColor #2C3E50
+    StereotypeFontColor #2C3E50
+}
+
+skinparam packageStyle rectangle
+
+' Title
+title Music Shop Management System - Class Diagram
+
+' Packages
+package Model {
+    ' Interfaces
+    interface Purchasable {
+        + {abstract} purchaseItem(): void
+        + {abstract} returnItem(): void
+    }
+
+    ' Abstract Classes
+    abstract class Product {
+        - name: String
+        - price: double
+        - imageFileName: String
+        # stock: int
+        + Product(name: String, price: double, imageFileName: String)
+        + getName(): String
+        + getPrice(): double
+        + getImageFileName(): String
+        + getStock(): int
+        + updateStock(quantity: int): void
+        + {abstract} getDetails(): String
+    }
+
+    ' Concrete Classes
+    class Album {
+        - artist: String
+        - genre: Genre
+        + Album(name: String, price: double, artist: String, genre: Genre)
+        + getArtist(): String
+        + getGenre(): Genre
+        + getDetails(): String
+    }
+
+    class CD {
+        - artist: String
+        - genre: Genre
+        - numberOfTracks: int
+        - duration: int
+        + CD(name: String, price: double, artist: String, genre: Genre)
+        + getArtist(): String
+        + getGenre(): Genre
+        + getNumberOfTracks(): int
+        + getDuration(): int
+        + getDetails(): String
+    }
+
+    class Customer {
+        - name: String
+        - email: String
+        - purchaseHistory: List<Sale>
+        + Customer(name: String, email: String)
+        + getName(): String
+        + getEmail(): String
+        + addPurchase(sale: Sale): void
+        + getPurchaseHistory(): List<Sale>
+    }
+
+    class Sale {
+        - id: UUID
+        - customer: Customer
+        - products: List<Product>
+        - totalAmount: double
+        - date: LocalDateTime
+        + Sale(customer: Customer, products: List<Product>)
+        + getId(): UUID
+        + getCustomer(): Customer
+        + getProducts(): List<Product>
+        + getTotalAmount(): double
+        + getDate(): LocalDateTime
+    }
+
+    class ShoppingCart {
+        - items: List<Product>
+        - customer: Customer
+        + addItem(product: Product): void
+        + removeItem(product: Product): void
+        + getItems(): List<Product>
+        + getTotalPrice(): double
+        + checkout(): Sale
+        + clear(): void
+    }
+
+    ' Enums
+    enum Genre {
+        ROCK
+        POP
+        JAZZ
+        CLASSICAL
+        HIP_HOP
+    }
+}
+
+package GUI {
+    class MusicShopGUI {
+        - frame: JFrame
+        - productList: JList<Product>
+        - cartList: JList<Product>
+        - customer: Customer
+        - cart: ShoppingCart
+        + initialize(): void
+        - createProductPanel(): JPanel
+        - createCartPanel(): JPanel
+        - updateDisplay(): void
+        - handlePurchase(): void
+        - handleReturn(): void
+    }
+
+    class AlbumListCellRenderer {
+        + getListCellRendererComponent(): Component
+    }
+}
+
+package Main {
+    class Main {
+        + {static} main(args: String[]): void
+        - {static} initializeProducts(): List<Product>
+        - {static} setupGUI(): void
+    }
+}
+
+' Relationships
+Product ..|> Purchasable
+Album --|> Product
+CD --|> Product
+
+Album --> Genre
+CD --> Genre
+
+Customer "1" --> "1" ShoppingCart
+Customer "1" --> "*" Sale
+ShoppingCart "1" --> "*" Product : contains
+Sale "*" --> "1" Customer : belongs to
+Sale "*" --> "*" Product : includes
+
+MusicShopGUI --> Customer : displays
+MusicShopGUI --> ShoppingCart : manages
+MusicShopGUI --> AlbumListCellRenderer : uses
+
+Main --> MusicShopGUI : creates
+Main --> Product : initializes
+
+@enduml
