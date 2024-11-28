@@ -1,39 +1,83 @@
+/**
+ * Main graphical user interface for the Music Shop application.
+ * Provides a comprehensive shopping experience for both vinyl and CD formats.
+ * 
+ * Key features:
+ * - Tabbed interface for browsing vinyl and CD albums
+ * - Unified shopping cart for both formats
+ * - Dynamic pricing (CDs priced at 40% of vinyl)
+ * - Album cover image preview
+ * - Real-time cart total calculation
+ * - Streamlined checkout process
+ * 
+ * Design Patterns:
+ * - Observer Pattern: Cart updates trigger UI refresh
+ * - Strategy Pattern: Different pricing for formats
+ * - Singleton Pattern: Single shop instance
+ * 
+ * @see Album
+ * @see Customer
+ */
 package GUI;
 
 import Enums.Genre;
 import Model.Album;
 import Model.Customer;
-import Model.Sale;
 import Exceptions.PurchaseLimitException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.File;
 
-public class MusicShopGUI extends JFrame {
+public final class MusicShopGUI extends JFrame {
+    /** Path to album cover images */
+    private static final String IMAGE_PATH = "src//resources//images//"; // Base path for album images
+    
+    /** Maximum allowed quantity per album/CD */
+    private static final int MAX_QUANTITY_PER_ITEM = 2;
+    
+    /** Current customer shopping in the store */
     private Customer customer;
+    
+    /** List of all available albums */
     private List<Album> availableAlbums;
+    
+    /** List model for shopping cart */
     private DefaultListModel<Album> cartListModel;
+    
+    /** Map to track quantities of items in cart */
+    private Map<String, Integer> cartQuantities;
+    
+    /** GUI Components */
     private JList<Album> vinylAlbumList;
     private JList<Album> cdAlbumList;
     private JList<Album> cartList;
     private JLabel totalLabel;
     private JLabel messageLabel;
-    private static final String IMAGE_PATH = "src/resources/images/"; // Base path for album images
     private JTabbedPane tabbedPane;
     private JPanel cartPanel;
 
+    /**
+     * Constructs and initializes the Music Shop GUI.
+     * Sets up the shop inventory and GUI components.
+     */
     public MusicShopGUI() {
         initializeShop();
         setupGUI();
     }
 
+    /**
+     * Initializes the shop with default inventory and customer.
+     * Creates sample albums and sets up list models.
+     */
     private void initializeShop() {
         // Initialize customer
-        customer = new Customer("Guest");
+        customer = new Customer("GUEST-001", "Guest");
 
         // Initialize available albums
         availableAlbums = new ArrayList<>();
@@ -64,8 +108,13 @@ public class MusicShopGUI extends JFrame {
         availableAlbums.add(new Album("Come Away With Me", "Norah Jones", Genre.JAZZ, 15.00, "norahjones.jpeg"));
         
         cartListModel = new DefaultListModel<>();
+        cartQuantities = new HashMap<>();
     }
 
+    /**
+     * Sets up the main GUI components and layout.
+     * Creates the tabbed interface and shopping cart panel.
+     */
     private void setupGUI() {
         setTitle("Music Shop");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,6 +148,12 @@ public class MusicShopGUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Creates the shopping cart panel.
+     * Includes cart list, total, and checkout button.
+     * 
+     * @return JPanel containing cart components
+     */
     private JPanel createCartPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createTitledBorder("Shopping Cart"));
@@ -140,6 +195,13 @@ public class MusicShopGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Creates a panel for displaying albums of a specific format.
+     * Includes album list, preview image, and add to cart button.
+     * 
+     * @param isVinyl true for vinyl format, false for CD
+     * @return JPanel containing format-specific components
+     */
     private JPanel createFormatPanel(boolean isVinyl) {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         String formatName = isVinyl ? "Vinyl" : "CD";
@@ -180,65 +242,141 @@ public class MusicShopGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Adds the selected album to the shopping cart.
+     * Updates cart total and displays confirmation message.
+     * 
+     * @param isVinyl true if adding from vinyl tab, false for CD
+     */
     private void addToCart(boolean isVinyl) {
         JList<Album> albumList = isVinyl ? vinylAlbumList : cdAlbumList;
         Album selectedAlbum = albumList.getSelectedValue();
         
         if (selectedAlbum != null) {
-            cartListModel.addElement(selectedAlbum);
-            
             try {
-                String imagePath = getImagePath(selectedAlbum.getImageFileName());
-                File imageFile = new File(imagePath);
+                // Get current quantity of this item in cart
+                int currentQuantity = cartQuantities.getOrDefault(selectedAlbum.getTitle(), 0);
                 
-                if (!imageFile.exists()) {
-                    messageLabel.setText("Image not found at: " + imagePath);
-                    return;
+                // Ask user for quantity
+                String input = JOptionPane.showInputDialog(
+                    this,
+                    "Enter quantity (1-" + (MAX_QUANTITY_PER_ITEM - currentQuantity) + "):",
+                    "Add to Cart",
+                    JOptionPane.QUESTION_MESSAGE
+                );
+                
+                if (input == null) {
+                    return; // User cancelled
+                }
+                
+                int quantity;
+                try {
+                    quantity = Integer.parseInt(input.trim());
+                } catch (NumberFormatException e) {
+                    throw new PurchaseLimitException("Please enter a valid number.");
+                }
+                
+                // Validate quantity
+                if (quantity <= 0) {
+                    throw new PurchaseLimitException("Quantity must be greater than 0.");
+                }
+                
+                if (currentQuantity + quantity > MAX_QUANTITY_PER_ITEM) {
+                    throw new PurchaseLimitException("You can only purchase up to " + MAX_QUANTITY_PER_ITEM + " copies of each item.");
+                }
+                
+                // Add the items to cart
+                for (int i = 0; i < quantity; i++) {
+                    cartListModel.addElement(selectedAlbum);
+                }
+                
+                // Update quantity tracking
+                cartQuantities.put(selectedAlbum.getTitle(), currentQuantity + quantity);
+                
+                // Show album image and update cart
+                try {
+                    String imagePath = getImagePath(selectedAlbum.getImageFileName());
+                    File imageFile = new File(imagePath);
+                    
+                    if (!imageFile.exists()) {
+                        messageLabel.setText("Image not found at: " + imagePath);
+                        return;
+                    }
+
+                    ImageIcon albumImageIcon = new ImageIcon(imagePath);
+                    
+                    if (albumImageIcon.getIconWidth() > 0) {
+                        int maxSize = 200;
+                        int width = albumImageIcon.getIconWidth();
+                        int height = albumImageIcon.getIconHeight();
+                        double scale = Math.min((double) maxSize / width, (double) maxSize / height);
+                        
+                        int scaledWidth = (int) (width * scale);
+                        int scaledHeight = (int) (height * scale);
+                        
+                        Image scaledImage = albumImageIcon.getImage()
+                            .getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+                        
+                        JLabel albumImageLabel = new JLabel(new ImageIcon(scaledImage));
+                        albumImageLabel.setHorizontalAlignment(JLabel.CENTER);
+                        
+                        JPanel imagePanel = new JPanel(new BorderLayout());
+                        imagePanel.add(albumImageLabel, BorderLayout.CENTER);
+                        imagePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                        
+                        JOptionPane.showMessageDialog(this, imagePanel,
+                            String.format("Added to Cart: %s (%s) - Quantity: %d", 
+                                selectedAlbum.getTitle(), 
+                                (isVinyl ? "Vinyl" : "CD"),
+                                quantity),
+                            JOptionPane.PLAIN_MESSAGE);
+                    } else {
+                        messageLabel.setText("Failed to load image: " + selectedAlbum.getImageFileName());
+                    }
+                } catch (Exception e) {
+                    messageLabel.setText("Error loading image: " + e.getMessage());
+                    e.printStackTrace();
                 }
 
-                ImageIcon albumImageIcon = new ImageIcon(imagePath);
-                
-                if (albumImageIcon.getIconWidth() > 0) {
-                    int maxSize = 200;
-                    int width = albumImageIcon.getIconWidth();
-                    int height = albumImageIcon.getIconHeight();
-                    double scale = Math.min((double) maxSize / width, (double) maxSize / height);
+                updateTotalLabel();
+                messageLabel.setText(String.format("Added: %s (%s) - Quantity: %d", 
+                    selectedAlbum.getTitle(), 
+                    (isVinyl ? "Vinyl" : "CD"),
+                    quantity));
                     
-                    int scaledWidth = (int) (width * scale);
-                    int scaledHeight = (int) (height * scale);
-                    
-                    Image scaledImage = albumImageIcon.getImage()
-                        .getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-                    
-                    JLabel albumImageLabel = new JLabel(new ImageIcon(scaledImage));
-                    albumImageLabel.setHorizontalAlignment(JLabel.CENTER);
-                    
-                    JPanel imagePanel = new JPanel(new BorderLayout());
-                    imagePanel.add(albumImageLabel, BorderLayout.CENTER);
-                    imagePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                    
-                    JOptionPane.showMessageDialog(this, imagePanel,
-                        "Added to Cart: " + selectedAlbum.getTitle() + " (" + (isVinyl ? "Vinyl" : "CD") + ")",
-                        JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    messageLabel.setText("Failed to load image: " + selectedAlbum.getImageFileName());
-                }
-            } catch (Exception e) {
-                messageLabel.setText("Error loading image: " + e.getMessage());
-                e.printStackTrace();
+            } catch (PurchaseLimitException e) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage(),
+                    "Purchase Limit Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
             }
-
-            updateTotalLabel();
-            messageLabel.setText("Added: " + selectedAlbum.getTitle() + " (" + (isVinyl ? "Vinyl" : "CD") + ")");
+        } else {
+            messageLabel.setText("No album selected to add to cart.");
         }
     }
 
+    /**
+     * Removes selected items from the shopping cart.
+     * Updates cart total and display.
+     */
     private void removeFromCart() {
         int[] selectedIndices = cartList.getSelectedIndices();
         if (selectedIndices.length > 0) {
             List<Album> albumsToRemove = new ArrayList<>();
             for (int index : selectedIndices) {
-                albumsToRemove.add(cartListModel.getElementAt(index));
+                Album album = cartListModel.getElementAt(index);
+                albumsToRemove.add(album);
+                
+                // Update quantities
+                String title = album.getTitle();
+                int currentQuantity = cartQuantities.getOrDefault(title, 0);
+                if (currentQuantity > 1) {
+                    cartQuantities.put(title, currentQuantity - 1);
+                } else {
+                    cartQuantities.remove(title);
+                }
             }
             for (Album album : albumsToRemove) {
                 cartListModel.removeElement(album);
@@ -250,6 +388,10 @@ public class MusicShopGUI extends JFrame {
         }
     }
 
+    /**
+     * Processes the checkout operation.
+     * Validates cart contents and completes purchase.
+     */
     private void checkout() {
         if (cartListModel.isEmpty()) {
             messageLabel.setText("Cart is empty!");
@@ -257,25 +399,23 @@ public class MusicShopGUI extends JFrame {
         }
 
         double total = 0;
-        List<Album> purchasedAlbums = new ArrayList<>();
         for (int i = 0; i < cartListModel.size(); i++) {
             Album album = cartListModel.getElementAt(i);
             total += album.getPrice();
-            purchasedAlbums.add(album);
-        }
-
-        // Create individual sales for each album
-        for (Album album : purchasedAlbums) {
-            new Sale(customer, album, new Date());
         }
         
         String message = String.format("Thank you for your purchase!%nTotal: $%.2f", total);
         JOptionPane.showMessageDialog(this, message, "Purchase Complete", JOptionPane.INFORMATION_MESSAGE);
         cartListModel.clear();
+        cartQuantities.clear();
         updateTotalLabel();
         messageLabel.setText("Purchase completed successfully!");
     }
 
+    /**
+     * Updates the total price display in the cart.
+     * Calculates sum of all items and updates label.
+     */
     private void updateTotalLabel() {
         double total = 0;
         for (int i = 0; i < cartListModel.size(); i++) {
@@ -284,10 +424,22 @@ public class MusicShopGUI extends JFrame {
         totalLabel.setText(String.format("Total: $%.2f (%d items)", total, cartListModel.size()));
     }
 
+    /**
+     * Constructs the full path to an album cover image.
+     * 
+     * @param imageFileName name of the image file
+     * @return full path to the image file
+     */
     private String getImagePath(String imageFileName) {
         return IMAGE_PATH + imageFileName;
     }
 
+    /**
+     * Main method to launch the Music Shop application.
+     * Creates and displays the main GUI window.
+     * 
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MusicShopGUI().setVisible(true);

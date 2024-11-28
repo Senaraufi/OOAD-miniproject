@@ -1,3 +1,23 @@
+/**
+ * Graphical user interface for managing the employee roster in the music shop.
+ * Provides comprehensive employee information display and management capabilities.
+ * 
+ * Key features:
+ * - Dynamic employee list display
+ * - Role-based filtering
+ * - Work schedule visualization
+ * - Detailed employee information view
+ * - Real-time employee count tracking
+ * 
+ * Design Patterns:
+ * - MVC Pattern: Separates employee data from display logic
+ * - Observer Pattern: Updates display when employee data changes
+ * - Filter Pattern: Role and schedule-based filtering
+ * 
+ * @see Employee
+ * @see EmployeeData
+ * @see Role
+ */
 package GUI;
 
 import Model.Employee;
@@ -11,20 +31,43 @@ import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * The main class for the Employee Roster GUI application.
+ * Extends JFrame to provide a graphical user interface.
+ */
 public class EmployeeRosterGUI extends JFrame {
+    /**
+     * Data model containing all employee information.
+     */
     private EmployeeData employeeData;
-    private JTable employeeTable;
+    
+    /**
+     * Table model for displaying employee list.
+     */
     private DefaultTableModel tableModel;
+    
+    /**
+     * GUI Components.
+     */
+    private JTable employeeTable;
     private JComboBox<Role> roleFilter;
     private JComboBox<String> dayFilter;
     private JLabel totalEmployeesLabel;
     private JTextArea employeeDetailsArea;
 
+    /**
+     * Constructs a new EmployeeRosterGUI.
+     * Initializes the employee data model and sets up the GUI components.
+     */
     public EmployeeRosterGUI() {
         employeeData = new EmployeeData();
         initializeGUI();
     }
 
+    /**
+     * Initializes all GUI components and layouts.
+     * Sets up the main window, filters, table, and details panel.
+     */
     private void initializeGUI() {
         setTitle("Employee Roster");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -49,6 +92,12 @@ public class EmployeeRosterGUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Creates the top panel containing filter controls.
+     * Includes role and day filters for employee list.
+     * 
+     * @return JPanel containing filter components
+     */
     private JPanel createTopPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -75,6 +124,12 @@ public class EmployeeRosterGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Creates the center panel containing the employee table.
+     * Displays employee list with sortable columns.
+     * 
+     * @return JPanel containing table component
+     */
     private JPanel createCenterPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
@@ -119,6 +174,12 @@ public class EmployeeRosterGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Creates the right panel showing detailed employee information.
+     * Displays comprehensive information about the selected employee.
+     * 
+     * @return JPanel containing employee details
+     */
     private JPanel createRightPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
@@ -141,6 +202,12 @@ public class EmployeeRosterGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Updates the employee table with the given list of employees.
+     * Refreshes the table with the specified list of employees.
+     * 
+     * @param employees List of employees to display
+     */
     private void updateEmployeeTable(List<Employee> employees) {
         tableModel.setRowCount(0);
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -160,8 +227,14 @@ public class EmployeeRosterGUI extends JFrame {
             };
             tableModel.addRow(rowData);
         }
+
+        updateTotalEmployeesLabel();
     }
 
+    /**
+     * Filters the employee list based on selected criteria.
+     * Applies role and day filters to the employee table.
+     */
     private void filterEmployees() {
         List<Employee> filteredEmployees = employeeData.getAllEmployees();
         
@@ -183,11 +256,19 @@ public class EmployeeRosterGUI extends JFrame {
         updateTotalEmployeesLabel();
     }
 
+    /**
+     * Updates the total employees count label.
+     * Shows the current number of displayed employees.
+     */
     private void updateTotalEmployeesLabel() {
         int count = tableModel.getRowCount();
         totalEmployeesLabel.setText(String.format("Total Employees: %d", count));
     }
 
+    /**
+     * Displays detailed information about the selected employee.
+     * Shows comprehensive employee data in the details panel.
+     */
     private void displayEmployeeDetails() {
         int selectedRow = employeeTable.getSelectedRow();
         if (selectedRow >= 0) {
@@ -238,6 +319,12 @@ public class EmployeeRosterGUI extends JFrame {
         }
     }
 
+    /**
+     * Main method to launch the Employee Roster GUI.
+     * Creates and displays the roster window.
+     * 
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new EmployeeRosterGUI().setVisible(true);

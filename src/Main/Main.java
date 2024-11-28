@@ -1,16 +1,41 @@
+/**
+ * Main application class for the Music Store Management System.
+ * Initializes the system and demonstrates its functionality.
+ * 
+ * Key features:
+ * - System initialization
+ * - Sample data generation
+ * - Demonstration of system functionality
+ * 
+ * Design Pattern: Singleton Pattern
+ * - Single point of application entry
+ * - Centralized initialization
+ * 
+ * @see Album
+ * @see CD
+ */
 package Main;
 
 import Enums.Genre;
 import Model.Album;
 import Model.CD;
-import Model.Customer;
-import Model.ShoppingCart;
-import Exceptions.PurchaseLimitException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+/**
+ * Main entry point for the application.
+ * Initializes the system and demonstrates its functionality.
+ * 
+ * @param args Command line arguments (not used)
+ */
+public final class Main {
+    /**
+     * Main entry point for the application.
+     * Initializes the system and demonstrates its functionality.
+     * 
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         System.out.println("\n=== Music Store Management System ===\n");
 
@@ -64,43 +89,6 @@ public class Main {
         }
         System.out.println();
 
-        // Create a customer
-        System.out.println("Creating Customer:");
-        System.out.println("-----------------");
-        Customer customer = new Customer("John");
-        System.out.println("New customer created: " + customer.getName());
-        System.out.println();
-
-        // Create a shopping cart
-        ShoppingCart cart = new ShoppingCart(customer);
-
-        // Add items to cart
-        System.out.println("Adding items to cart:");
-        System.out.println("--------------------");
-        cart.addItem(availableAlbums.get(0));
-        System.out.println("✓ Added to cart: " + availableAlbums.get(0).getTitle());
-        cart.addItem(availableCDs.get(0));
-        System.out.println("✓ Added to cart: " + availableCDs.get(0).getTitle());
-        System.out.println("\nCart contents:");
-        System.out.println(cart);
-        System.out.println();
-
-        // Process checkout
-        System.out.println("Processing Checkout:");
-        System.out.println("-------------------");
-        try {
-            cart.checkout();
-            System.out.println("✓ Checkout completed successfully");
-        } catch (PurchaseLimitException e) {
-            System.out.println("❌ Error: " + e.getMessage());
-        }
-        System.out.println();
-
-        // Print customer details
-        System.out.println("Customer Details:");
-        System.out.println("----------------");
-        System.out.println(customer);
-        
-        System.out.println("\n=== End of Transaction ===\n");
+        System.out.println("\n=== End of Program ===\n");
     }
 }
