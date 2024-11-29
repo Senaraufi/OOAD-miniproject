@@ -1,55 +1,115 @@
-package Model;//declaring the package   
+/**
+ * Represents a customer in the music shop system.
+ * Manages customer information and purchase history.
+ * 
+ * Key features:
+ * - Customer profile management
+ * - Purchase history tracking
+ * - Purchase limit enforcement
+ * - Shopping cart association
+ */
+package Model;
 
-import Exceptions.PurchaseLimitException;//importing the purchase limit exception
+import java.util.*;
+import Exceptions.PurchaseLimitException;
 
-import java.util.ArrayList;//importing the array list
-import java.util.List;//importing the list
+public class Customer {
+    /** Maximum allowed purchases per customer */
+    private static final int MAX_PURCHASES = 3;
+    
+    /** Customer's unique identifier */
+    private final String customerId;
+    
+    /** Customer's name */
+    private final String name;
+    
+    /** List of customer's purchases */
+    private final List<Product> purchasedItems;
+    
+    /** Customer's shopping cart */
+    private final ShoppingCart cart;
 
-public class Customer {//defining the customer class
-    private String name;//declaring the name variable
-    private List<Product> purchasedItems;//declaring the purchasedItems variable
-    private static final int MAX_PURCHASES = 3;//declaring the MAX_PURCHASES variable
-
-
-    public Customer(String name) {
-        this.name = name;//initializing the name variable
-        this.purchasedItems = new ArrayList<>();//initializing the purchasedItems variable
+    /**
+     * Constructs a new Customer with the specified details.
+     * 
+     * @param customerId Unique identifier
+     * @param name Customer's name
+     */
+    public Customer(String customerId, String name) {
+        this.customerId = customerId;
+        this.name = name;
+        this.purchasedItems = new ArrayList<>();
+        this.cart = new ShoppingCart(this);
     }
 
-    public String getName() {//defining the getName method
-        return name;//returning the name
+    /**
+     * Gets the customer's unique identifier.
+     * 
+     * @return Customer ID
+     */
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setName(String name) {//defining the setName method
-        this.name = name;//initializing the name variable
+    /**
+     * Gets the customer's name.
+     * 
+     * @return Customer name
+     */
+    public String getName() {
+        return name;
     }
 
-    public List<Product> getPurchasedItems() {//defining the getPurchasedItems method
-        return purchasedItems;//returning the purchasedItems
+    /**
+     * Gets the customer's shopping cart.
+     * 
+     * @return Shopping cart
+     */
+    public ShoppingCart getCart() {
+        return cart;
     }
 
-    public void setPurchasedItems(List<Product> purchasedItems) {//defining the setPurchasedItems method
-        this.purchasedItems = purchasedItems;//initializing the purchasedItems variable
+    /**
+     * Gets an unmodifiable list of customer's purchases.
+     * 
+     * @return List of purchased items
+     */
+    public List<Product> getPurchasedItems() {
+        return Collections.unmodifiableList(purchasedItems);
     }
 
-    public void purchaseItem(Product product) throws PurchaseLimitException {//defining the purchaseItem method
+    /**
+     * Processes the purchase of an item.
+     * 
+     * @param product Product to purchase
+     * @throws PurchaseLimitException if purchase would exceed limit
+     */
+    public void purchaseItem(Product product) throws PurchaseLimitException {
         if (purchasedItems.size() >= MAX_PURCHASES) {
             throw new PurchaseLimitException("Purchase limit reached. Return an item before purchasing another.");
         }
-        product.purchaseItem();//calling the purchaseItem method
-        purchasedItems.add(product);//adding the product to the purchasedItems list
+        product.purchaseItem();
+        purchasedItems.add(product);
     }
 
+    /**
+     * Returns an item previously purchased.
+     * 
+     * @param product Product to return
+     */
     public void returnItem(Product product) {
-        product.returnItem();//calling the returnItem method
-        purchasedItems.remove(product);//removing the product from the purchasedItems list
+        product.returnItem();
+        purchasedItems.remove(product);
     }
 
+    /**
+     * Returns a string representation of the customer.
+     * 
+     * @return Formatted string with customer details
+     */
     @Override
-    public String toString() {//defining the toString method
-        return "Customer{" +//returning the customer details
-                "name='" + name + '\'' +//getting the name
-                ", purchasedItems=" + purchasedItems +//getting the purchasedItems
-                '}';//end of string representation
+    public String toString() {
+        return String.format("Customer %s: %s (%d purchases)", 
+            customerId, name, purchasedItems.size());
     }
 }
