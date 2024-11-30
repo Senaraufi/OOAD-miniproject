@@ -78,6 +78,31 @@ package Model {
         + getPurchaseHistory(): List<Sale>
     }
 
+    class Employee {
+        - id: String
+        - name: String
+        - role: Role
+        - salary: double
+        - hireDate: LocalDate
+        + Employee(id: String, name: String, role: Role)
+        + getId(): String
+        + getName(): String
+        + getRole(): Role
+        + getSalary(): double
+        + getHireDate(): LocalDate
+        + setSalary(salary: double): void
+        + setRole(role: Role): void
+    }
+
+    class EmployeeData {
+        - employees: List<Employee>
+        + addEmployee(employee: Employee): void
+        + removeEmployee(employee: Employee): void
+        + getEmployees(): List<Employee>
+        + findEmployeeById(id: String): Employee
+        + updateEmployee(employee: Employee): void
+    }
+
     class Sale {
         - id: UUID
         - customer: Customer
@@ -102,30 +127,25 @@ package Model {
         + checkout(): Sale
         + clear(): void
     }
-
-    ' Enums
-    enum Genre {
-        ROCK
-        POP
-        JAZZ
-        CLASSICAL
-        HIP_HOP
-    }
 }
 
 package GUI {
     class MusicShopGUI {
         - frame: JFrame
-        - productList: JList<Product>
-        - cartList: JList<Product>
-        - customer: Customer
-        - cart: ShoppingCart
+        - productPanel: JPanel
+        - cartPanel: JPanel
         + initialize(): void
-        - createProductPanel(): JPanel
-        - createCartPanel(): JPanel
-        - updateDisplay(): void
-        - handlePurchase(): void
-        - handleReturn(): void
+        - createProductPanel(): void
+        - createCartPanel(): void
+        - updateUI(): void
+    }
+
+    class EmployeeRosterGUI {
+        - frame: JFrame
+        - employeeTable: JTable
+        + initialize(): void
+        - createEmployeePanel(): void
+        - updateEmployeeTable(): void
     }
 
     class AlbumListCellRenderer {
@@ -133,33 +153,43 @@ package GUI {
     }
 }
 
-package Main {
-    class Main {
-        + {static} main(args: String[]): void
-        - {static} initializeProducts(): List<Product>
-        - {static} setupGUI(): void
+package Enums {
+    enum Genre {
+        ROCK
+        POP
+        JAZZ
+        CLASSICAL
+        HIPHOP
+        ELECTRONIC
+    }
+
+    enum Role {
+        MANAGER
+        SALES_ASSOCIATE
+        INVENTORY_CLERK
+        CASHIER
     }
 }
 
 ' Relationships
+Product <|-- Album
+Product <|-- CD
 Product ..|> Purchasable
-Album --|> Product
-CD --|> Product
 
-Album --> Genre
-CD --> Genre
+Customer "1" -- "*" Sale
+Sale "*" -- "*" Product
 
-Customer "1" --> "1" ShoppingCart
-Customer "1" --> "*" Sale
-ShoppingCart "1" --> "*" Product : contains
-Sale "*" --> "1" Customer : belongs to
-Sale "*" --> "*" Product : includes
+ShoppingCart "1" -- "1" Customer
+ShoppingCart "*" -- "*" Product
 
-MusicShopGUI --> Customer : displays
-MusicShopGUI --> ShoppingCart : manages
-MusicShopGUI --> AlbumListCellRenderer : uses
+EmployeeData "1" -- "*" Employee
+Employee -- Role
 
-Main --> MusicShopGUI : creates
-Main --> Product : initializes
+MusicShopGUI -- ShoppingCart
+MusicShopGUI -- Product
+EmployeeRosterGUI -- EmployeeData
+
+Album -- Genre
+CD -- Genre
 
 @enduml
