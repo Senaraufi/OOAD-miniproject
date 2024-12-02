@@ -120,3 +120,39 @@ Object-Oriented Principles Demonstrated
 4. Abstraction:
    - Abstract Product class
    - Purchasable interface
+
+Object-Oriented Programming Elements:
+1. Final Class Implementation
+   - Main class is declared as 'public final class Main'
+   - Prevents inheritance, ensuring class behavior integrity
+   - Serves as the application entry point
+
+2. Super Class & Inheritance
+   - Product serves as the super class
+   - Album and CD classes inherit from Product
+   - Demonstrates proper inheritance hierarchy
+
+3. Enums
+   - Genre enum (ROCK, POP, JAZZ, CLASSICAL, etc.)
+   - Role enum (MANAGER, SALES_ASSOCIATE, etc.)
+   - Provides type-safe enumeration
+
+4. Abstract Class
+   - Product is implemented as an abstract class
+   - Contains abstract methods for child classes
+   - Enforces consistent implementation
+
+5. Private Members
+   - Extensive use of private fields and methods
+   - Examples: private final List<Product> items in ShoppingCart
+   - Ensures proper encapsulation
+
+6. Package Organization
+   - Main: Application entry point
+   - Model: Business logic classes
+   - GUI: User interface components
+   - Enums: Enumeration types
+   - Interfaces: Contract definitions
+   - Exceptions: Custom error handling
+
+All required Object-Oriented Programming elements have been successfully implemented in the project, demonstrating a comprehensive understanding of OOP principles and their practical application.
