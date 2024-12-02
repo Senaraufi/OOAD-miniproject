@@ -76,6 +76,27 @@ Design Patterns Used
 2. Interface Implementation: Purchasable interface
 3. Model-View Separation: Separate packages for business logic and UI
 
+Subclasses Implementation:
+1. Model Package Subclasses:
+   - Album extends Product
+     * Adds album-specific features (artist, genre)
+     * Implements vinyl format functionality
+   
+   - CD extends Product
+     * Adds CD-specific features (tracks, duration)
+     * Implements CD format functionality
+
+2. GUI Package Subclasses:
+   - AlbumListCellRenderer extends JPanel
+     * Implements ListCellRenderer<Album>
+     * Provides custom rendering for album display
+     * Handles album image and text presentation
+
+These subclasses demonstrate proper inheritance and specialization, allowing for:
+- Code reuse through inheritance
+- Specific implementations for different product types
+- Custom UI components for better user experience
+
 How It Works
 -----------
 1. Initialization:
