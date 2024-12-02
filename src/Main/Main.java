@@ -5,7 +5,8 @@
  * Key features:
  * - System initialization
  * - Sample data generation
- * - Demonstration of system functionality
+ * - Customer creation and purchase simulation
+ * - Receipt generation
  * 
  * Design Pattern: Singleton Pattern
  * - Single point of application entry
@@ -13,33 +14,40 @@
  * 
  * @see Album
  * @see CD
+ * @see Customer
  */
 package Main;
 
 import Enums.Genre;
 import Model.Album;
 import Model.CD;
+import Model.Customer;
+import Model.Product;
+import Model.ShoppingCart;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Main entry point for the application.
- * Initializes the system and demonstrates its functionality.
- * 
- * @param args Command line arguments (not used)
+ * Demonstrates the music shop functionality including customer purchases and receipt generation.
  */
 public final class Main {
     /**
      * Main entry point for the application.
-     * Initializes the system and demonstrates its functionality.
+     * Demonstrates the complete purchase flow:
+     * 1. Initializes inventory (albums and CDs)
+     * 2. Creates a customer
+     * 3. Simulates purchases
+     * 4. Generates a receipt
      * 
      * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
         System.out.println("\n=== Music Store Management System ===\n");
 
-        // Initialize available albums
+        // Initialize available albums with various genres and prices
+        // Each album includes: title, artist, genre, price, and image file
         List<Album> availableAlbums = new ArrayList<>();
         availableAlbums.add(new Album("Greatest Hits", "Queen", Genre.ROCK, 29.99, "queen.jpg"));
         availableAlbums.add(new Album("Thriller", "Michael Jackson", Genre.POP, 24.99, "thriller.jpg"));
@@ -67,13 +75,14 @@ public final class Main {
         availableAlbums.add(new Album("Dreaming", "Andre Rieu", Genre.CLASSICAL, 15.00, "andrerieu.jpg"));
         availableAlbums.add(new Album("Come Away With Me", "Norah Jones", Genre.JAZZ, 15.00, "norahjones.jpg"));
 
-        // Initialize available CDs
+        // Initialize available CDs with additional track information
+        // Each CD includes: title, artist, genre, price, image file, number of tracks, and duration
         List<CD> availableCDs = new ArrayList<>();
         availableCDs.add(new CD("OK Computer", "Radiohead", Genre.ROCK, 19.99, "ok_computer.jpg", 12, "53:21"));
         availableCDs.add(new CD("Blue", "Joni Mitchell", Genre.FOLK, 15.99, "blue.jpg", 10, "35:41"));
         availableCDs.add(new CD("Kind of Blue", "Miles Davis", Genre.JAZZ, 17.99, "kind_of_blue.jpg", 5, "45:44"));
 
-        // Print available albums
+        // Display available inventory to the user
         System.out.println("Available Albums:");
         System.out.println("-----------------");
         for (int i = 0; i < availableAlbums.size(); i++) {
@@ -81,13 +90,35 @@ public final class Main {
         }
         System.out.println();
 
-        // Print available CDs
         System.out.println("Available CDs:");
         System.out.println("----------------");
         for (int i = 0; i < availableCDs.size(); i++) {
             System.out.println((i + 1) + ". " + availableCDs.get(i));
         }
         System.out.println();
+
+        // Create a new customer with ID and name
+        Customer customer = new Customer("CUST001", "John Doe");
+        System.out.println("\nCustomer Created: " + customer.getCustomerId() + " - " + "John Doe");
+
+        // Simulate customer purchases by adding items to their cart
+        customer.getCart().addItem(availableAlbums.get(0));  // Add Queen's Greatest Hits album
+        customer.getCart().addItem(availableCDs.get(0));     // Add Radiohead's OK Computer CD
+        
+        // Generate and display the purchase receipt
+        double total = 0;
+        System.out.println("\nPurchase Receipt:");
+        System.out.println("----------------");
+        System.out.println("Customer: John Doe (CUST001)");
+        System.out.println("\nItems purchased:");
+        for (Product item : customer.getCart().getItems()) {
+            System.out.println("- " + item.getName() + " ($" + String.format("%.2f", item.getPrice()) + ")");
+            total += item.getPrice();
+        }
+        
+        // Display the total amount with proper formatting
+        System.out.println("\nTotal Amount: $" + String.format("%.2f", total));
+        System.out.println("----------------");
 
         System.out.println("\n=== End of Program ===\n");
     }
