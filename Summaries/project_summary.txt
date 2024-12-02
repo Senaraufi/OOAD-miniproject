@@ -3,7 +3,7 @@
 
 Project Overview
 ---------------
-This project implements a Music Shop Management System using Java, following Object-Oriented Programming principles. The system allows users to browse, purchase, and manage music albums and CDs through both a command-line interface and a graphical user interface.
+This project develops a Music Shop Management System in Java with reference to OOP concepts. It provides the functionalities of browsing and finding, buying, and organizing music albums and CDs by using mainly a line interface and a graphical window.
 
 Package Structure
 ---------------

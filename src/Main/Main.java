@@ -1,21 +1,4 @@
-/**
- * Main application class for the Music Store Management System.
- * Initializes the system and demonstrates its functionality.
- * 
- * Key features:
- * - System initialization
- * - Sample data generation
- * - Customer creation and purchase simulation
- * - Receipt generation
- * 
- * Design Pattern: Singleton Pattern
- * - Single point of application entry
- * - Centralized initialization
- * 
- * @see Album
- * @see CD
- * @see Customer
- */
+
 package Main;
 
 import Enums.Genre;
