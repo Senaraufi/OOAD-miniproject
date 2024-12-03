@@ -68,7 +68,7 @@ public abstract class Product implements Purchasable {
      * 
      * @return The name of the product.
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -77,7 +77,7 @@ public abstract class Product implements Purchasable {
      * 
      * @return The price of the product.
      */
-    public double getPrice() {
+    public final double getPrice() {
         return price;
     }
 
@@ -86,7 +86,7 @@ public abstract class Product implements Purchasable {
      * 
      * @return The file name of the product's image.
      */
-    public String getImageFileName() {
+    public final String getImageFileName() {
         return imageFileName;
     }
 
