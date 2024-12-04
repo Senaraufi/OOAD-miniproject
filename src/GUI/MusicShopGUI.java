@@ -36,7 +36,7 @@ import java.io.File;
 
 public final class MusicShopGUI extends JFrame {
     /** Path to album cover images */
-    private static final String IMAGE_PATH = "src//resources//images//"; // Base path for album images
+    private static final String IMAGE_PATH = "src/resources/images/"; // Base path for album images
     
     /** Maximum allowed quantity per album/CD */
     private static final int MAX_QUANTITY_PER_ITEM = 2;
