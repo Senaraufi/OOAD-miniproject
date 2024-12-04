@@ -1,10 +1,9 @@
-### Team Meetings & Contributions Summary
+Team Meetings & Contributions Summary
 ==========================================
 
-Week 7 (date xxxxx, 2023)
+Week 7
 ----------------------------
-Meeting Date: 
-Location: 
+Location: Online and In person
 Attendees: Sena, Pixie
 
 Decisions Made:
@@ -13,13 +12,16 @@ Decisions Made:
 - Set up GitHub repository for version control
 
 Individual Contributions:
-- Sena: 
-- Pixie:
+- Sena: *Added the outline of the project: Began the Main, Genre, Purchasable, Album, PurchaseLimitException , Customer and Sale Classes.
+	*(In this, added the first few albums used, genres, connecting them to the main, and how the sales will work)
+	*Also Added A "README" File
+	*Created the first GUI File
+- Pixie:Edited that GUI file so that it displays photos of each album, added more albums to the Album class, edited the Main to include these changes as well.
+	
 
-Week 8 (date xxxxx, 2023)
+Week 8
 ----------------------------
-Meeting Date: 
-Location: Online Discord
+Location: Online Discord and in Person
 Attendees: Both team members
 
 Decisions Made:
@@ -27,20 +29,23 @@ Decisions Made:
 - Started code implementation
 - Established coding standards
 
-Individual Contributions:
-- Sena: 
-  *
-  * 
-  *
-- Pixie:
-  * 
-  * 
-  *
 
-Week 9 (date xxxxx, 2023)
+Individual Contributions:
+-Sena:
+  * Fixed the Main, merged both of our collaborations on GitHub
+  * Began the Diagram for the final project
+  * Fixed the gitignore and README files
+
+-Pixie:
+  * Added a new GUI that is to be used as a company roster for the record shop
+  * Added new Enum "Role", added an Employee Class, updated the main to include the seller on the reciept 
+  * Updated three of the classes to make them Final
+
+
+
+Week 9 
 -----------------------------------
-Meeting Date: 
-Location:
+Location: Online and In person
 Attendees: Both team members
 
 Decisions Made:
@@ -49,35 +54,38 @@ Decisions Made:
 - Planned testing phase
 
 Individual Contributions:
-- Sena:
-  * 
-  * 
-  
+- Sena: 
+  * Fixed a major error of the albums not correctly displaying on all devices
+  * Began the Project Summary
+  * Edited all the classes so that they display in the main correctly for demoing, and so it randomly generates a sale and receipt when ran
 - Pixie:
-  * 
-  * 
+  * Fixed the GUI so the correct packages are used in the GUI
+  * Edited the ENUM Genre file to include more genres, and so it displays beside each album in the GUI
+  * Utilized the PurchaseLimitException file Sena made so that it is now used with the GUI and Main that user has a limit of 2 of the same albums per purchase.
 
-Final Week (Date xxxxx, 2023)
------------------------------
-Meeting Date: 
-Location: 
+
+Final Week 
+----------------------------- 
+Location: Online and In person
 Attendees: Both team members
 
 Decisions Made:
 - Final testing and bug fixes
 - Documentation review
 - Preparation for presentation
+- Edited Code
 
 Individual Contributions:
 - Sena:
-  * 
-  * 
+  * Updated the Project Summary
+  * Added the Static Methods needed
   
 - Pixie:
-  * 
-  * 
+  * Finished the Diagram Sena began
+  * Finished the Team Meetings/Contributions
 
-Documentation:
+
+Documentation: (All found on GitHub)
 - Sena: Project architecture and class diagrams
         Testing documentation and use cases
 
